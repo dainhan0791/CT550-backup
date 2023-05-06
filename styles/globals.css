@@ -1,0 +1,56 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+@font-face {
+  font-family: ProximaNova;
+  src: url('/assets/fonts/Proxima-Nova-Regular.woff2') !important;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: ProximaNova;
+  src: url('/assets/fonts/ProximaNova-Semibold.woff2') !important ;
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: ProximaNova;
+  src: url('/assets/fonts/Proxima-Nova-Bold.woff') !important ;
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: SofiaPro;
+  src: url('/assets/fonts/sofiapro-bold.woff') !important ;
+  font-weight: 700;
+}
+/* Scroppbar CSS */
+html *::-webkit-scrollbar {
+  border-radius: 0;
+  width: 6px;
+}
+
+html *::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+html *::-webkit-scrollbar-track {
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+html,
+body {
+  overflow: hidden;
+  text-rendering: optimizeSpeed;
+  color: rgba(22, 24, 35, 1);
+  padding-right: 0 !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
