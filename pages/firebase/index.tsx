@@ -11,14 +11,32 @@ const index = () => {
     {
       did: '1',
       icon: 'hashtag-solid.svg',
-      label: 'test1',
-      value: 'Test1',
+      label: 'Dance',
+      value: 'dance',
     },
     {
       did: '2',
+      icon: 'utensils-solid.svg',
+      label: 'Food Review',
+      value: 'food-review',
+    },
+    {
+      did: '3',
+      icon: 'paw-solid.svg',
+      label: 'Cartoon',
+      value: 'cartoon',
+    },
+    {
+      did: '4',
       icon: 'hashtag-solid.svg',
-      label: 'test2',
-      value: 'Test2',
+      label: 'Girl',
+      value: 'girl',
+    },
+    {
+      did: '5',
+      icon: 'music-solid.svg',
+      label: 'Music ',
+      value: 'music',
     },
   ];
 
@@ -179,10 +197,12 @@ const index = () => {
   };
 
   const addDataToFirebase = () => {
-    if (addFavorites) {
-      addFavorites();
+    if (addTarget) {
+      addTarget();
+      alert('Success');
+    } else {
+      alert('No Access To Firebase');
     }
-    // alert('No Access To Firebase');
   };
 
   return (
