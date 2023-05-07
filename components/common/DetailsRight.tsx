@@ -15,6 +15,7 @@ import ActionsVideo from './ActionsVideo';
 import CoppyTag from './CoppyTag';
 import DetailsVideoComments from './DetailsVideoComments';
 import ShareDialog from '../dialogs/ShareDialog';
+import Axios from 'axios';
 
 const SCDetailsRightWrapper = styled.div`
   height: 100vh;
@@ -83,6 +84,8 @@ const DetailsRight = ({
             isRead: false,
             timestamp: serverTimestamp(),
           });
+
+          await Axios.post(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/follow/${profileVideo.uid}`);
 
           enqueueSnackbar(`Follow successfully`, { variant: 'success' });
         }

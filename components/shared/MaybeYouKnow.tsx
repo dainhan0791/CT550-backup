@@ -37,6 +37,7 @@ const SCSeeAll = styled.p`
 const MaybeYouKnow = () => {
   const dispatch = useAppDispatch();
   const profile = useAppSelector((state) => state.account.profile);
+  const accounts = useAppSelector((state) => state.account.accounts);
 
   const [data, setData] = React.useState<Array<IAccountItem>>([]);
 
@@ -44,55 +45,54 @@ const MaybeYouKnow = () => {
     const fetchData = async () => {
       try {
         if (!profile) return;
+        if (!accounts) return;
 
-        const res = await Axios.get(`${process.env.NEXT_PUBLIC_NEO4J_URL}/user/${profile.uid}`);
+        const res = await Axios.get(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/${profile.uid}`);
 
-        console.log(res);
+        if (res.data?.length) {
+          const unique = res.data.filter((c: IAccountItem, index: number) => {
+            return res.data.indexOf(c) === index;
+          });
+
+          const result: Array<IAccountItem> = accounts.filter((item: IAccountItem) => unique.includes(item.uid));
+
+          if (result) {
+            setData(result);
+          }
+        }
       } catch (error) {
-        console.log(console.error);
+        console.log(error);
       }
     };
 
     fetchData();
-  }, []);
-
-  const suggestedAccounts = useAppSelector((state) => state.account.suggestedAccounts);
-
-  const [seeAll, setSeeAll] = React.useState<boolean>(false);
-
-  const handleSeeAll = () => {
-    if (seeAll) {
-      setSeeAll(false);
-      dispatch(hideSuggestedAccounts());
-    } else {
-      setSeeAll(true);
-      dispatch(seeAllSuggestedAccounts());
-    }
-  };
+  }, [profile]);
 
   return (
-    <SCSuggestedAccountsWrapper>
-      <SCSuggestedAccountsLabel>Maybe You Know</SCSuggestedAccountsLabel>
-      {!suggestedAccounts.length && (
-        <Skeleton variant="rounded" style={{ width: '100%', height: '18rem' }}>
-          <AccountItem name={''} nickname={''} photoURL={''} tick={false} uid={''} email={''} followers={[]} />
-        </Skeleton>
+    <div>
+      {data?.length && profile ? (
+        <SCSuggestedAccountsWrapper>
+          <SCSuggestedAccountsLabel>Maybe You Know</SCSuggestedAccountsLabel>
+          <div>
+            {data.map((account: IAccountItem) => (
+              <AccountItem
+                key={account.uid}
+                uid={account.uid}
+                name={account.name}
+                nickname={account.nickname}
+                photoURL={account.photoURL}
+                tick={account.tick}
+                email={account.email}
+                followers={[]}
+              />
+            ))}
+          </div>
+          {/* <SCSeeAll onClick={handleSeeAll}>{displaySeeAll(seeAll)}</SCSeeAll> */}
+        </SCSuggestedAccountsWrapper>
+      ) : (
+        ''
       )}
-      {suggestedAccounts &&
-        suggestedAccounts.map((account: IAccountItem) => (
-          <AccountItem
-            key={account.uid}
-            uid={account.uid}
-            name={account.name}
-            nickname={account.nickname}
-            photoURL={account.photoURL}
-            tick={account.tick}
-            email={account.email}
-            followers={[]}
-          />
-        ))}
-      <SCSeeAll onClick={handleSeeAll}>{displaySeeAll(seeAll)}</SCSeeAll>
-    </SCSuggestedAccountsWrapper>
+    </div>
   );
 };
 

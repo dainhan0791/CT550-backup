@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { guid } from '../../utils/generates';
 import Feeds from '../shared/Feeds';
 import ShareDialog from '../dialogs/ShareDialog';
+import Axios from 'axios';
 
 const SCVideoItemWrapper = styled.div`
   scroll-snap-align: start;
@@ -85,6 +86,8 @@ const VideoItem = (props: IVideoItem) => {
             isRead: false,
             timestamp: serverTimestamp(),
           });
+
+          await Axios.post(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/follow/${props.uid}`);
 
           enqueueSnackbar(`Follow success.`, { variant: 'success' });
         }

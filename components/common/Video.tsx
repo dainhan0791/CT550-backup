@@ -96,7 +96,7 @@ const Video = (props: IVideo) => {
               views: arrayUnion(profile.uid),
             });
           }
-          videoRef.current.play();
+          videoRef.current?.play();
           setPlaying(true);
         }
       }

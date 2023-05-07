@@ -44,6 +44,7 @@ import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { ILabelValue } from '../../interfaces/config.interface';
 import AccountDatingItem from '../items/AccountDatingItem';
 import { uploadBytes, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import Axios from 'axios';
 
 const SCWrap = styled.div`
   display: flex;
@@ -167,6 +168,35 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
     setTag(newValue);
   };
 
+  const [data, setData] = React.useState<Array<IAccountItem>>([]);
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!profile) return;
+        if (!accounts) return;
+
+        const res = await Axios.get(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/${profile.uid}`);
+
+        if (res.data?.length) {
+          const unique = res.data.filter((c: IAccountItem, index: number) => {
+            return res.data.indexOf(c) === index;
+          });
+
+          const result: Array<IAccountItem> = accounts.filter((item: IAccountItem) => unique.includes(item.uid));
+
+          if (result) {
+            setData(result);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [profile]);
+
   React.useEffect(() => {
     if (!profile) return;
 
@@ -194,8 +224,8 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
 
     // const userTarget = doc(fStore, 'users', account.uid);
 
-    if (accounts && profile) {
-      accounts.forEach((item: IAccountItem) => {
+    if (data?.length && profile) {
+      data.forEach((item: IAccountItem) => {
         // Validate
         if (
           item?.country === profile?.country &&
@@ -332,6 +362,11 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
           sex: values.sex,
           datingImages: urls,
         });
+
+        await Axios.post(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/favorites/${profile.uid}`, {
+          favorites: values.favorites,
+        });
+
         enqueueSnackbar('Update Expectation Dating Success.', {
           variant: 'success',
         });

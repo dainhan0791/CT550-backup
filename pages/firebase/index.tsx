@@ -199,10 +199,8 @@ const index = () => {
   const addDataToFirebase = () => {
     if (addTarget) {
       addTarget();
-      alert('Success');
-    } else {
-      alert('No Access To Firebase');
     }
+    // alert('No Access To Firebase');
   };
 
   return (

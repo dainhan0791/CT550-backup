@@ -31,6 +31,7 @@ import { EChatRole } from '../../enums/chat.enum';
 import ShareDialog from '../dialogs/ShareDialog';
 
 import { setTargetConversation } from '../../redux/slices/chat.slice';
+import Axios from 'axios';
 
 const SCAccountItemWrapper = styled.div`
   cursor: pointer;
@@ -193,6 +194,8 @@ const AccountPersonalItem = (props: IAccountItem) => {
             timestamp: serverTimestamp(),
           });
 
+          await Axios.post(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/follow/${props.uid}`);
+
           enqueueSnackbar(`Follow success.`, { variant: 'success' });
         }
       }
@@ -214,6 +217,8 @@ const AccountPersonalItem = (props: IAccountItem) => {
           await updateDoc(currentUserRef, {
             following: arrayRemove(props.uid),
           });
+
+          await Axios.post(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/unfollow/${props.uid}`);
 
           enqueueSnackbar(`UnFollow success.`, { variant: 'success' });
         }

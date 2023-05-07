@@ -74,6 +74,7 @@ const DetailVideo = () => {
       if (!videoId) {
         return;
       }
+
       try {
         if (fStore && videoId) {
           const videoRef = doc(fStore, 'videos', videoId.toString());

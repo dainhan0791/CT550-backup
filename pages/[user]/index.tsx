@@ -92,7 +92,6 @@ export default function DetailsAccount() {
     }
   };
 
-
   const fetchProducts = async () => {
     try {
       if (!products.length) {
