@@ -92,9 +92,10 @@ export default function DetailsAccount() {
     }
   };
 
-  React.useEffect(() => {
-    const fetchProducts = async () => {
-      try {
+
+  const fetchProducts = async () => {
+    try {
+      if (!products.length) {
         if (account && fStore) {
           const q = query(collection(fStore, 'products'), where('uid', '==', account.uid));
           const data: Array<IProduct> = [];
@@ -104,13 +105,13 @@ export default function DetailsAccount() {
           });
           setProducts(data.sort((a: IProduct, b: IProduct) => a.price - b.price));
         }
-      } catch (error) {
-        console.log(error);
       }
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    fetchProducts();
-  }, [account]);
+  fetchProducts();
 
   return (
     <Layout title={`${account?.nickname}(@${account?.name})`}>
