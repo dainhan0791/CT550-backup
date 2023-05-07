@@ -11,6 +11,7 @@ import AboutMeFooter from './AboutMeFooter';
 import Discover from './Discover';
 import FollowingList from './FollowingList';
 import SuggestedAccounts from './SuggestedAccounts';
+import MaybeYouKnow from './MaybeYouKnow';
 
 const SCLeftNavBarWapper = styled.div`
   width: 100%;
@@ -41,6 +42,11 @@ const LeftSideBar = () => {
           <SCDivider />
         </SCBox>
       )}
+
+      <SCBox>
+        <MaybeYouKnow />
+        <SCDivider />
+      </SCBox>
 
       <SCBox>
         <SuggestedAccounts />
