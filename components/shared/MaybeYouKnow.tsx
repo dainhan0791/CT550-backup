@@ -49,6 +49,8 @@ const MaybeYouKnow = () => {
 
         const res = await Axios.get(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/${profile.uid}`);
 
+        console.log(res);
+
         if (res.data?.length) {
           const unique = res.data.filter((c: IAccountItem, index: number) => {
             return res.data.indexOf(c) === index;

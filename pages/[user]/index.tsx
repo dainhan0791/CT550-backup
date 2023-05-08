@@ -94,8 +94,11 @@ export default function DetailsAccount() {
 
   const fetchProducts = async () => {
     try {
-      if (!products.length) {
-        if (account && fStore) {
+
+      if(!account) return;
+      if(!fStore) return;
+
+      if (!products.length && account.totalProducts) {
           const q = query(collection(fStore, 'products'), where('uid', '==', account.uid));
           const data: Array<IProduct> = [];
           const querySnapshot = await getDocs(q);
@@ -103,7 +106,6 @@ export default function DetailsAccount() {
             data.push(doc.data() as IProduct);
           });
           setProducts(data.sort((a: IProduct, b: IProduct) => a.price - b.price));
-        }
       }
     } catch (error) {
       console.log(error);

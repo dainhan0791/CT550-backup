@@ -32,6 +32,8 @@ const NotificationsMenu = ({
   setLimitNoti: Function;
   totalNoti: number;
 }) => {
+
+  
   const moreNotiData = () => {
     if (limitNoti && setLimitNoti) {
       setTimeout(() => {

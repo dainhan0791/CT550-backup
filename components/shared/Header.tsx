@@ -261,13 +261,13 @@ const Header = ({ title }: { title: string }) => {
 
   const [openUploadVideoDialog, setOpenUploadVideoDialog] = React.useState(false);
 
-  const [queryUsers, setQueryUsers] = React.useState<string>('');
   const [loading, setLoading] = React.useState<boolean>(false);
   const [users, setUsers] = React.useState<Array<IAccountItem>>([]);
   const [openUsersData, setOpenUsersData] = React.useState<boolean>(false);
-
+  
   const usersDataRef = React.useRef<any>(null);
-
+  
+  const [queryUsers, setQueryUsers] = React.useState<string>('');
   const debouncedValue = useDebounce(queryUsers, 800);
 
   const [openCartDialog, setOpenCartDialog] = React.useState<boolean>(false);
@@ -385,7 +385,6 @@ const Header = ({ title }: { title: string }) => {
       setUsers([]);
       return;
     }
-
     const searchUsers = async () => {
       try {
         setLoading(true);

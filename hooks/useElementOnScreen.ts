@@ -1,5 +1,6 @@
 import React from 'react';
 const useElementOnScreen = (options: any, targetRef: any) => {
+  
   const [isVisibile, setIsVisible] = React.useState();
   const callbackFunction = (entries: any) => {
     const [entry] = entries; //const entry = entries[0]
