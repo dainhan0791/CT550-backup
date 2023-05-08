@@ -77,9 +77,9 @@ export default function DetailsAccount() {
 
   const accounts = useAppSelector((state) => state.account.accounts);
 
-  if (!user) return;
+  // if (!user) return;
 
-  const account = accounts.find((account) => account.name === getNameInRouter(user.toString()));
+  const account = accounts.find((account) => account.name === getNameInRouter(user?.toString() || ''));
 
   // Feeds Personal
   if (Array.isArray(feeds) && account) {
