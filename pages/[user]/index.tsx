@@ -92,20 +92,24 @@ export default function DetailsAccount() {
     }
   };
 
+  React.useEffect(() => {
+    setTag('1');
+    setProducts([]);
+  }, [user]);
+
   const fetchProducts = async () => {
     try {
-
-      if(!account) return;
-      if(!fStore) return;
+      if (!account) return;
+      if (!fStore) return;
 
       if (!products.length && account.totalProducts) {
-          const q = query(collection(fStore, 'products'), where('uid', '==', account.uid));
-          const data: Array<IProduct> = [];
-          const querySnapshot = await getDocs(q);
-          querySnapshot.forEach((doc) => {
-            data.push(doc.data() as IProduct);
-          });
-          setProducts(data.sort((a: IProduct, b: IProduct) => a.price - b.price));
+        const q = query(collection(fStore, 'products'), where('uid', '==', account.uid));
+        const data: Array<IProduct> = [];
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+          data.push(doc.data() as IProduct);
+        });
+        setProducts(data.sort((a: IProduct, b: IProduct) => a.price - b.price));
       }
     } catch (error) {
       console.log(error);
