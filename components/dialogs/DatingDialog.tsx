@@ -363,9 +363,17 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
           datingImages: urls,
         });
 
-        await Axios.post(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/favorites/${profile.uid}`, {
-          favorites: values.favorites,
-        });
+        await Axios.post(
+          `${process.env.NEXT_PUBLIC_NEO4J_API}/user/favorites/${profile.uid}`,
+          {
+            favorites: values.favorites,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        );
 
         enqueueSnackbar('Update Expectation Dating Success.', {
           variant: 'success',

@@ -85,7 +85,17 @@ const DetailsRight = ({
             timestamp: serverTimestamp(),
           });
 
-          await Axios.post(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/follow/${profileVideo.uid}`);
+          await Axios.post(
+            `${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/follow/${profile.uid}`,
+            {
+              id: profileVideo.uid,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          );
 
           enqueueSnackbar(`Follow successfully`, { variant: 'success' });
         }

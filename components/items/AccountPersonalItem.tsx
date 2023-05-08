@@ -194,7 +194,17 @@ const AccountPersonalItem = (props: IAccountItem) => {
             timestamp: serverTimestamp(),
           });
 
-          await Axios.post(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/follow/${props.uid}`);
+          await Axios.post(
+            `${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/follow/${profile.uid}`,
+            {
+              id: props.uid,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          );
 
           enqueueSnackbar(`Follow success.`, { variant: 'success' });
         }
@@ -218,7 +228,17 @@ const AccountPersonalItem = (props: IAccountItem) => {
             following: arrayRemove(props.uid),
           });
 
-          await Axios.post(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/unfollow/${props.uid}`);
+          await Axios.post(
+            `${process.env.NEXT_PUBLIC_NEO4J_API}/user/friends/unfollow/${profile.uid}`,
+            {
+              id: props.uid,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          );
 
           enqueueSnackbar(`UnFollow success.`, { variant: 'success' });
         }
