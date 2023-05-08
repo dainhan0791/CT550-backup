@@ -68,6 +68,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import MicIcon from '@mui/icons-material/Mic';
 import MicOffIcon from '@mui/icons-material/MicOff';
 import { useSelector } from 'react-redux';
+import useDebounce from '../../hooks/useDebounce';
 
 const SCHeader = styled.div`
   display: -webkit-box;
@@ -267,6 +268,8 @@ const Header = ({ title }: { title: string }) => {
 
   const usersDataRef = React.useRef<any>(null);
 
+  const debouncedValue = useDebounce(queryUsers, 800);
+
   const [openCartDialog, setOpenCartDialog] = React.useState<boolean>(false);
 
   const handleOpenCartDialog = () => {
@@ -377,44 +380,43 @@ const Header = ({ title }: { title: string }) => {
     document.addEventListener('click', handleClickOutside, true);
   }, [openUsersData]);
 
-  const searchUsers = async () => {
-    try {
-      // setLoading(true);
-      if (!accounts) {
-        return;
-      }
-
-      // const q = query(
-      //   collection(fStore, 'users'),
-      //   where('noAccentName', '>=', queryUsers.toLocaleLowerCase()),
-      //   orderBy('noAccentName'),
-      // );
-      // const snapshot = await getDocs(q);
-      // const data = snapshot.docs.map((doc) => doc.data());
-
-      const data = accounts.filter((account: IAccountItem) =>
-        account.noAccentName?.includes(queryUsers.toLowerCase().trim()),
-      );
-
-      if (data.length > 0) {
-        setUsers(data as Array<IAccountItem>);
-      }
-      setOpenUsersData(true);
-    } catch (error) {
-      console.log(error);
-      setOpenUsersData(false);
-    }
-  };
-
   React.useEffect(() => {
-    if (queryUsers.length < 3) {
+    if (!debouncedValue.trim()) {
+      setUsers([]);
       return;
-    } else {
-      setTimeout(() => {
-        searchUsers();
-      }, 1000);
     }
-  }, [queryUsers]);
+
+    const searchUsers = async () => {
+      try {
+        setLoading(true);
+        if (!accounts) {
+          return;
+        }
+
+        const q = query(collection(fStore, 'users'), orderBy('noAccentName'));
+        const snapshot = await getDocs(q);
+        const data: any = snapshot.docs.map((doc) => doc.data());
+
+        if (Array.isArray(data)) {
+          const result = data.filter((account: IAccountItem) =>
+            account.noAccentName?.includes(debouncedValue.toLowerCase().trim()),
+          );
+          setUsers(result as Array<IAccountItem>);
+          setLoading(false);
+          setOpenUsersData(true);
+        } else {
+          setUsers([]);
+        }
+      } catch (error) {
+        console.log(error);
+        setUsers([]);
+        setLoading(false);
+        setOpenUsersData(false);
+      }
+    };
+
+    searchUsers();
+  }, [debouncedValue]);
 
   React.useEffect(() => {
     const getNotifications = async () => {
