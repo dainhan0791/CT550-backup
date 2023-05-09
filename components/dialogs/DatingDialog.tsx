@@ -296,10 +296,10 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
     }
 
     if (profile && fStore) {
-      const name = profile.name;
+      const uid = profile.uid;
 
       for (let i = 0; i < images.length; i++) {
-        const imageRef = ref(fStorage, `images/dating/${name}/${Date.now()}${images[i]?.name}`);
+        const imageRef = ref(fStorage, `images/dating/${uid}/${Date.now()}${images[i]?.name}`);
 
         if (imageRef) {
           const uploadTask = uploadBytesResumable(imageRef, images[i]);

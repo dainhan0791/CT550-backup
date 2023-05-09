@@ -124,7 +124,7 @@ const UploadVideoDialog = (props: IDialogProps) => {
       if (!values) return;
       // 'file' comes from the Blob or File API
       if (file && profile) {
-        const videoRef = ref(fStorage, `videos/${values.hashtag}/${profile.name}/${Date.now()}${file.name}`);
+        const videoRef = ref(fStorage, `videos/${values.hashtag}/${profile.uid}/${Date.now()}${file.name}`);
         const uploadTask = uploadBytesResumable(videoRef, file);
         uploadTask.on(
           'state_changed',

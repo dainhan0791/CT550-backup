@@ -139,7 +139,7 @@ const SettingsUserDialog = (props: IDialogProps) => {
       }
 
       if (fStorage && profile && file && values.name) {
-        const imageRef = ref(fStorage, `images/avatar/${values.name}/${Date.now()}${file.name}`);
+        const imageRef = ref(fStorage, `images/avatar/${profile.uid}/${Date.now()}${file.name}`);
 
         const uploadTask = uploadBytesResumable(imageRef, file);
         uploadTask.on(

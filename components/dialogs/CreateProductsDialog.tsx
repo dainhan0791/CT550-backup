@@ -184,7 +184,7 @@ export default function CreateProductsDialog({ open, handleClose }: { open: bool
 
     try {
       if (fStorage && profile && file) {
-        const imageRef = ref(fStorage, `images/products/${profile.name}/${Date.now()}${file.name}`);
+        const imageRef = ref(fStorage, `images/products/${profile.uid}/${Date.now()}${file.name}`);
 
         const uploadTask = uploadBytesResumable(imageRef, file);
         uploadTask.on(
