@@ -30,6 +30,8 @@ import DisabledButton from '../common/DisabledButton';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 
+import Axios from 'axios'
+
 const SCDialogTitle = styled(DialogTitle)`
   font-size: 1.2rem;
   text-transform: uppercase;
@@ -186,6 +188,18 @@ const LogInDialog = (props: IDialogProps) => {
             totalProducts: 0,
             totalOrder: 0,
           });
+
+           await Axios.post(
+            `${process.env.NEXT_PUBLIC_NEO4J_API}/user`,
+            {
+              id: UserCredentialImpl.user.uid,
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            },
+          );
         }
       }
     } catch (error: any) {
