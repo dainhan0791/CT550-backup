@@ -35,7 +35,7 @@ import { IMessage } from '../../interfaces/chat.interface';
 const SCAccountItemWrapper = styled.div`
   cursor: pointer;
   width: 100%;
-  max-width: 445px;
+  max-width: 345px;
   background: #f5f5f5;
   margin-bottom: 0.5rem;
 `;

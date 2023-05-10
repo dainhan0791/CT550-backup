@@ -246,7 +246,6 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
       setTag('1');
     } else {
       setIsDisplaySettings(true);
-      setTag('5');
     }
   }, [profile]);
 
@@ -426,48 +425,7 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
         <>
           <SCDialogTitle>Dating</SCDialogTitle>
           <DialogContent>
-            <TabContext value={tag}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                {isDisplaySettings ? (
-                  <TabList onChange={handleChangeTag} aria-label="lab API tabs example">
-                    <Tab
-                      label="Opps, please enter more infomation to continue Dating!"
-                      value="5"
-                      sx={{ maxWidth: '100%' }}
-                    />
-                  </TabList>
-                ) : (
-                  <TabList onChange={handleChangeTag} aria-label="lab API tabs example">
-                    <Tab label="Accounts" value="1" />
-                    <Tab label="Invite" value="2" />
-                    <Tab label="Invited" value="3" />
-                    <Tab label="Match" value="4" />
-                    <Tab label="Settings" value="5" />
-                  </TabList>
-                )}
-              </Box>
-              <TabPanel value="1">
-                {list?.length
-                  ? list.map((account: IAccountItem) => <AccountDatingItem key={account.uid} {...account} />)
-                  : ''}
-              </TabPanel>
-              <TabPanel value="2">
-                {listInvite?.length
-                  ? listInvite.map((account: IAccountItem) => <AccountDatingItem key={account.uid} {...account} />)
-                  : ''}
-              </TabPanel>
-              <TabPanel value="3">
-                {listInvited.length
-                  ? listInvited.map((account: IAccountItem) => <AccountDatingItem key={account.uid} {...account} />)
-                  : ''}
-              </TabPanel>
-              <TabPanel value="4">
-                {listMatch.length
-                  ? listMatch.map((account: IAccountItem) => (
-                      <AccountDatingItem key={account.uid} {...account} isMatch handleCloseDatingDialog={handleClose} />
-                    ))
-                  : ''}
-              </TabPanel>
+            {isDisplaySettings ? (
               <TabPanel value="5">
                 <SCForm onSubmit={(event) => handleSubmit(event)}>
                   {submited && !!errors.tall && <AlertError severity="error">{errors.tall}</AlertError>}
@@ -632,7 +590,56 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
                   </SCButton>
                 </SCForm>
               </TabPanel>
-            </TabContext>
+            ) : (
+              <TabContext value={tag}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  {isDisplaySettings ? (
+                    <TabList onChange={handleChangeTag} aria-label="lab API tabs example">
+                      <Tab
+                        label="Opps, please enter more infomation to continue Dating!"
+                        value="5"
+                        sx={{ maxWidth: '100%' }}
+                      />
+                    </TabList>
+                  ) : (
+                    <TabList onChange={handleChangeTag} aria-label="lab API tabs example">
+                      <Tab label="Accounts" value="1" />
+                      <Tab label="Invite" value="2" />
+                      <Tab label="Invited" value="3" />
+                      <Tab label="Match" value="4" />
+                      {/* <Tab label="Settings" value="5" /> */}
+                    </TabList>
+                  )}
+                </Box>
+                <TabPanel value="1">
+                  {list?.length
+                    ? list.map((account: IAccountItem) => <AccountDatingItem key={account.uid} {...account} />)
+                    : ''}
+                </TabPanel>
+                <TabPanel value="2">
+                  {listInvite?.length
+                    ? listInvite.map((account: IAccountItem) => <AccountDatingItem key={account.uid} {...account} />)
+                    : ''}
+                </TabPanel>
+                <TabPanel value="3">
+                  {listInvited.length
+                    ? listInvited.map((account: IAccountItem) => <AccountDatingItem key={account.uid} {...account} />)
+                    : ''}
+                </TabPanel>
+                <TabPanel value="4">
+                  {listMatch.length
+                    ? listMatch.map((account: IAccountItem) => (
+                        <AccountDatingItem
+                          key={account.uid}
+                          {...account}
+                          isMatch
+                          handleCloseDatingDialog={handleClose}
+                        />
+                      ))
+                    : ''}
+                </TabPanel>
+              </TabContext>
+            )}
           </DialogContent>
         </>
       </Dialog>
