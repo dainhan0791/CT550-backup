@@ -168,14 +168,10 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
     setTag(newValue);
   };
 
-  const [data, setData] = React.useState<Array<IAccountItem>>([]);
-
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         if (!profile) return;
-        if (!accounts) return;
-
         const res = await Axios.get(`${process.env.NEXT_PUBLIC_NEO4J_API}/user/${profile.uid}`);
 
         if (res.data?.length) {
@@ -185,9 +181,47 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
 
           const result: Array<IAccountItem> = accounts.filter((item: IAccountItem) => unique.includes(item.uid));
 
-          if (result) {
-            setData(result);
+          let list: Array<IAccountItem> = [];
+          let listInvite: Array<IAccountItem> = [];
+          let listInvited: Array<IAccountItem> = [];
+          let listMatch: Array<IAccountItem> = [];
+
+          // const userTarget = doc(fStore, 'users', account.uid);
+
+          if (result?.length && profile) {
+            result.forEach((item: IAccountItem) => {
+              // Validate
+              if (
+                item?.country === profile?.country &&
+                item.uid !== profile.uid &&
+                !profile.inviteDating?.includes(item.uid) &&
+                profile.targets?.includes(item?.sex || '') &&
+                profile.favorites?.filter((favorite: string) => item.favorites?.includes(favorite)).length
+              ) {
+                list.push(item);
+              }
+
+              // Invite
+              if (profile.inviteDating?.includes(item.uid)) {
+                listInvite.push(item);
+              }
+
+              // Invited
+              if (profile.invitedDating?.includes(item.uid)) {
+                listInvited.push(item);
+              }
+
+              // Math
+              if (profile.inviteDating?.includes(item.uid) && item.inviteDating?.includes(profile.uid)) {
+                listMatch.push(item);
+              }
+            });
           }
+
+          setList(list);
+          setListInvite(listInvite);
+          setListInvited(listInvited);
+          setListMatch(listMatch);
         }
       } catch (error) {
         console.log(error);
@@ -195,7 +229,7 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
     };
 
     fetchData();
-  }, [profile]);
+  }, [profile, tag]);
 
   React.useEffect(() => {
     if (!profile) return;
@@ -214,50 +248,6 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
       setIsDisplaySettings(true);
       setTag('5');
     }
-  }, [profile]);
-
-  React.useEffect(() => {
-    let list: Array<IAccountItem> = [];
-    let listInvite: Array<IAccountItem> = [];
-    let listInvited: Array<IAccountItem> = [];
-    let listMatch: Array<IAccountItem> = [];
-
-    // const userTarget = doc(fStore, 'users', account.uid);
-
-    if (data?.length && profile) {
-      data.forEach((item: IAccountItem) => {
-        // Validate
-        if (
-          item?.country === profile?.country &&
-          item.uid !== profile.uid &&
-          !profile.inviteDating?.includes(item.uid) &&
-          profile.targets?.includes(item?.sex || '') &&
-          profile.favorites?.filter((favorite: string) => item.favorites?.includes(favorite)).length
-        ) {
-          list.push(item);
-        }
-
-        // Invite
-        if (profile.inviteDating?.includes(item.uid)) {
-          listInvite.push(item);
-        }
-
-        // Invited
-        if (profile.invitedDating?.includes(item.uid)) {
-          listInvited.push(item);
-        }
-
-        // Math
-        if (profile.inviteDating?.includes(item.uid) && item.inviteDating?.includes(profile.uid)) {
-          listMatch.push(item);
-        }
-      });
-    }
-
-    setList(list);
-    setListInvite(listInvite);
-    setListInvited(listInvited);
-    setListMatch(listMatch);
   }, [profile]);
 
   const onHandleClose = () => {
@@ -457,24 +447,26 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
                 )}
               </Box>
               <TabPanel value="1">
-                {list.map((account: IAccountItem) => (
-                  <AccountDatingItem key={account.uid} {...account} />
-                ))}
+                {list?.length
+                  ? list.map((account: IAccountItem) => <AccountDatingItem key={account.uid} {...account} />)
+                  : ''}
               </TabPanel>
               <TabPanel value="2">
-                {listInvite.map((account: IAccountItem) => (
-                  <AccountDatingItem key={account.uid} {...account} />
-                ))}
+                {listInvite?.length
+                  ? listInvite.map((account: IAccountItem) => <AccountDatingItem key={account.uid} {...account} />)
+                  : ''}
               </TabPanel>
               <TabPanel value="3">
-                {listInvited.map((account: IAccountItem) => (
-                  <AccountDatingItem key={account.uid} {...account} />
-                ))}
+                {listInvited.length
+                  ? listInvited.map((account: IAccountItem) => <AccountDatingItem key={account.uid} {...account} />)
+                  : ''}
               </TabPanel>
               <TabPanel value="4">
-                {listMatch.map((account: IAccountItem) => (
-                  <AccountDatingItem key={account.uid} {...account} isMatch handleCloseDatingDialog={handleClose} />
-                ))}
+                {listMatch.length
+                  ? listMatch.map((account: IAccountItem) => (
+                      <AccountDatingItem key={account.uid} {...account} isMatch handleCloseDatingDialog={handleClose} />
+                    ))
+                  : ''}
               </TabPanel>
               <TabPanel value="5">
                 <SCForm onSubmit={(event) => handleSubmit(event)}>
