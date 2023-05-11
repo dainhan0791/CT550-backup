@@ -426,190 +426,168 @@ export default function DatingDialog({ open, handleClose }: { open: boolean; han
           <SCDialogTitle>Dating</SCDialogTitle>
           <DialogContent>
             {isDisplaySettings ? (
-              <TabPanel value="5">
-                <SCForm onSubmit={(event) => handleSubmit(event)}>
-                  {submited && !!errors.tall && <AlertError severity="error">{errors.tall}</AlertError>}
-                  {submited && !!errors.sex && <AlertError severity="error">{errors.sex}</AlertError>}
-                  {submited && !!errors.country && <AlertError severity="error">{errors.country}</AlertError>}
-                  {submited && values.targets.length === 0 && (
-                    <AlertError severity="error">{errors.targets || 'Targets is required'}</AlertError>
-                  )}
-                  {submited && values.favorites.length === 0 && (
-                    <AlertError severity="error">{errors.favorites || 'Favorites is required'}</AlertError>
-                  )}
+              <SCForm onSubmit={(event) => handleSubmit(event)}>
+                {submited && !!errors.tall && <AlertError severity="error">{errors.tall}</AlertError>}
+                {submited && !!errors.sex && <AlertError severity="error">{errors.sex}</AlertError>}
+                {submited && !!errors.country && <AlertError severity="error">{errors.country}</AlertError>}
+                {submited && values.targets.length === 0 && (
+                  <AlertError severity="error">{errors.targets || 'Targets is required'}</AlertError>
+                )}
+                {submited && values.favorites.length === 0 && (
+                  <AlertError severity="error">{errors.favorites || 'Favorites is required'}</AlertError>
+                )}
 
-                  <SCTextField
-                    id="tall"
-                    name="tall"
-                    value={values.tall}
+                <SCTextField
+                  id="tall"
+                  name="tall"
+                  value={values.tall}
+                  onChange={handleChange}
+                  size="small"
+                  placeholder="180cm"
+                  label="Tall"
+                />
+
+                <FormControl fullWidth size="small">
+                  <InputLabel id="sex">Sex</InputLabel>
+                  <SCSelect
+                    labelId="sex"
+                    label={'sex'}
+                    id="sex"
+                    name="sex"
+                    value={values.sex}
                     onChange={handleChange}
-                    size="small"
-                    placeholder="180cm"
-                    label="Tall"
-                  />
+                    size={'small'}
+                  >
+                    {sexOption?.length &&
+                      sexOption.map((item: ILabelValue) => (
+                        <MenuItem key={item.value} value={item.value}>
+                          <Box display="flex" gap="0.4rem" alignItems={'center'}>
+                            {item.label}
+                          </Box>
+                        </MenuItem>
+                      ))}
+                  </SCSelect>
+                </FormControl>
 
-                  <FormControl fullWidth size="small">
-                    <InputLabel id="sex">Sex</InputLabel>
-                    <SCSelect
-                      labelId="sex"
-                      label={'sex'}
-                      id="sex"
-                      name="sex"
-                      value={values.sex}
-                      onChange={handleChange}
-                      size={'small'}
-                    >
-                      {sexOption?.length &&
-                        sexOption.map((item: ILabelValue) => (
-                          <MenuItem key={item.value} value={item.value}>
-                            <Box display="flex" gap="0.4rem" alignItems={'center'}>
-                              {item.label}
-                            </Box>
-                          </MenuItem>
-                        ))}
-                    </SCSelect>
-                  </FormControl>
+                <Autocomplete
+                  id="country-select-demo"
+                  options={CountriesConstant}
+                  autoHighlight
+                  onChange={(event, newValue) => handleChangeCountry(event, newValue)}
+                  getOptionLabel={(option) => option.label}
+                  renderOption={(props, option) => (
+                    <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                      <img
+                        loading="lazy"
+                        width="20"
+                        src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                        srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                        alt=""
+                      />
+                      {option.label} ({option.code}) +{option.phone}
+                    </Box>
+                  )}
+                  renderInput={(params) => {
+                    return (
+                      <SCTextField
+                        {...params}
+                        label="Choose a country"
+                        size="small"
+                        inputProps={{
+                          ...params.inputProps,
+                          autoComplete: 'new-password', // disable autocomplete and autofill
+                        }}
+                      />
+                    );
+                  }}
+                />
 
+                {targetItems?.length && (
                   <Autocomplete
-                    id="country-select-demo"
-                    options={CountriesConstant}
-                    autoHighlight
-                    onChange={(event, newValue) => handleChangeCountry(event, newValue)}
+                    multiple
+                    onChange={(event, newValue) => handleChangeTarget(event, newValue)}
+                    id="checkboxes-tags-demo"
+                    options={targetItems}
+                    disableCloseOnSelect
                     getOptionLabel={(option) => option.label}
-                    renderOption={(props, option) => (
+                    renderOption={(props, option, { selected }) => (
                       <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                        <img
-                          loading="lazy"
-                          width="20"
-                          src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                          srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                          alt=""
-                        />
-                        {option.label} ({option.code}) +{option.phone}
+                        <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
+                        {option.label}
                       </Box>
                     )}
-                    renderInput={(params) => {
-                      return (
-                        <SCTextField
-                          {...params}
-                          label="Choose a country"
-                          size="small"
-                          inputProps={{
-                            ...params.inputProps,
-                            autoComplete: 'new-password', // disable autocomplete and autofill
-                          }}
-                        />
-                      );
-                    }}
+                    renderInput={(params) => <SCTextField {...params} label="Target" />}
                   />
+                )}
 
-                  {targetItems?.length && (
-                    <Autocomplete
-                      multiple
-                      onChange={(event, newValue) => handleChangeTarget(event, newValue)}
-                      id="checkboxes-tags-demo"
-                      options={targetItems}
-                      disableCloseOnSelect
-                      getOptionLabel={(option) => option.label}
-                      renderOption={(props, option, { selected }) => (
-                        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                          <Checkbox
-                            icon={icon}
-                            checkedIcon={checkedIcon}
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.label}
-                        </Box>
-                      )}
-                      renderInput={(params) => <SCTextField {...params} label="Target" />}
-                    />
-                  )}
-
-                  {favoriteItems?.length && (
-                    <Autocomplete
-                      multiple
-                      onChange={(event, newValue) => handleChangeFavorite(event, newValue)}
-                      id="checkboxes-tags-demo"
-                      options={favoriteItems}
-                      disableCloseOnSelect
-                      getOptionLabel={(option) => option.label}
-                      renderOption={(props, option, { selected }) => (
-                        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                          <Checkbox
-                            icon={icon}
-                            checkedIcon={checkedIcon}
-                            style={{ marginRight: 8 }}
-                            checked={selected}
-                          />
-                          {option.label}
-                        </Box>
-                      )}
-                      renderInput={(params) => <SCTextField {...params} label="Favorites" />}
-                    />
-                  )}
-                  <input
-                    type="file"
+                {favoriteItems?.length && (
+                  <Autocomplete
                     multiple
-                    accept="image/*"
-                    onChange={(event) => handleChangeMultipleImage(event)}
-                    style={{ marginBottom: '1rem' }}
+                    onChange={(event, newValue) => handleChangeFavorite(event, newValue)}
+                    id="checkboxes-tags-demo"
+                    options={favoriteItems}
+                    disableCloseOnSelect
+                    getOptionLabel={(option) => option.label}
+                    renderOption={(props, option, { selected }) => (
+                      <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                        <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
+                        {option.label}
+                      </Box>
+                    )}
+                    renderInput={(params) => <SCTextField {...params} label="Favorites" />}
                   />
-                  {images.length ? (
-                    <ImageList sx={{ width: 420, height: 200 }} cols={3} rowHeight={164}>
-                      {Array.from(images).map((item: any, index: number) => (
-                        <ImageListItem key={index}>
-                          <Avatar
-                            src={URL.createObjectURL(item)}
-                            sx={{ width: '100%', height: '100%' }}
-                            variant="rounded"
-                          />
-                        </ImageListItem>
-                      ))}
-                    </ImageList>
-                  ) : (
-                    <>
-                      {!images.length && profile?.datingImages?.length ? (
-                        <ImageList sx={{ width: 420, height: 200 }} cols={3} rowHeight={164}>
-                          {profile.datingImages.map((url: string) => (
-                            <ImageListItem key={url}>
-                              <Avatar src={url} sx={{ width: '100%', height: '100%' }} variant="rounded" />
-                            </ImageListItem>
-                          ))}
-                        </ImageList>
-                      ) : (
-                        ''
-                      )}
-                    </>
-                  )}
-                  <SCButton type="button" variant="contained" color="secondary" onClick={uploadImages}>
-                    Upload Images
-                  </SCButton>
-                  <SCButton type="submit" variant="contained" color="inherit">
-                    Update
-                  </SCButton>
-                </SCForm>
-              </TabPanel>
+                )}
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(event) => handleChangeMultipleImage(event)}
+                  style={{ marginBottom: '1rem' }}
+                />
+                {images.length ? (
+                  <ImageList sx={{ width: 420, height: 200 }} cols={3} rowHeight={164}>
+                    {Array.from(images).map((item: any, index: number) => (
+                      <ImageListItem key={index}>
+                        <Avatar
+                          src={URL.createObjectURL(item)}
+                          sx={{ width: '100%', height: '100%' }}
+                          variant="rounded"
+                        />
+                      </ImageListItem>
+                    ))}
+                  </ImageList>
+                ) : (
+                  <>
+                    {!images.length && profile?.datingImages?.length ? (
+                      <ImageList sx={{ width: 420, height: 200 }} cols={3} rowHeight={164}>
+                        {profile.datingImages.map((url: string) => (
+                          <ImageListItem key={url}>
+                            <Avatar src={url} sx={{ width: '100%', height: '100%' }} variant="rounded" />
+                          </ImageListItem>
+                        ))}
+                      </ImageList>
+                    ) : (
+                      ''
+                    )}
+                  </>
+                )}
+                <SCButton type="button" variant="contained" color="secondary" onClick={uploadImages}>
+                  Upload Images
+                </SCButton>
+                <SCButton type="submit" variant="contained" color="inherit">
+                  Update
+                </SCButton>
+              </SCForm>
             ) : (
               <TabContext value={tag}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                  {isDisplaySettings ? (
-                    <TabList onChange={handleChangeTag} aria-label="lab API tabs example">
-                      <Tab
-                        label="Opps, please enter more infomation to continue Dating!"
-                        value="5"
-                        sx={{ maxWidth: '100%' }}
-                      />
-                    </TabList>
-                  ) : (
-                    <TabList onChange={handleChangeTag} aria-label="lab API tabs example">
-                      <Tab label="Accounts" value="1" />
-                      <Tab label="Invite" value="2" />
-                      <Tab label="Invited" value="3" />
-                      <Tab label="Match" value="4" />
-                      {/* <Tab label="Settings" value="5" /> */}
-                    </TabList>
-                  )}
+                  <TabList onChange={handleChangeTag} aria-label="lab API tabs example">
+                    <Tab label="Accounts" value="1" />
+                    <Tab label="Invite" value="2" />
+                    <Tab label="Invited" value="3" />
+                    <Tab label="Match" value="4" />
+                    {/* <Tab label="Settings" value="5" /> */}
+                  </TabList>
                 </Box>
                 <TabPanel value="1">
                   {list?.length
